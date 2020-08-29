@@ -1,5 +1,5 @@
-import Home from "../../../Pages/Home";
-import Lobby from "../../../Pages/Lobby";
+import Home from "../../../Pages/Home.jsx";
+import Lobby from "../../../Pages/Lobby.jsx";
 
 export default [
   {
