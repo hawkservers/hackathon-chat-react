@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import "./chat.scss"
+import "./chat.scss";
 import Socket from "../../Services/Socket";
 
 export default class Chat extends Component {
