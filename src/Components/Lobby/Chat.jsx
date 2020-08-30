@@ -72,7 +72,7 @@ export default class Chat extends Component {
       <div className="messageContainer" key={index}>
         <span className="name">{ msg.user.username }</span>
         <div className="splitter">
-          <img alt="User Avatar" src={msg.user.avatar || 'https://i.pinimg.com/736x/33/32/6d/33326dcddbf15c56d631e374b62338dc.jpg'} className="image"/>
+          <img alt="User Avatar" src={msg.user.avatar || '/img/guest.png'} className="image"/>
           <div className="message">
             { msg.message }
           </div>

@@ -7,32 +7,48 @@ import "./home.scss"
 
 export default class Home extends Component {
   state = {
+    user: null,
     create: {
       name: '',
       password: null
     },
+    joinLobbyInput: '',
     joinLobby: null
   }
 
   componentDidMount() {
     Socket.addListener('lobby.join', this.onLobbyJoin);
+    Socket.addListener('user', this.onUserInfo);
   }
 
   componentWillUnmount() {
     Socket.removeListener('lobby.join', this.onLobbyJoin);
+    Socket.removeListener('user', this.onUserInfo);
   }
 
-  onLobbyJoin = (slug) => {
+  onLobbyJoin = (lobby) => {
     this.setState({
-      joinLobby: slug
+      joinLobby: lobby.slug
     });
   }
 
-  joinLobby = (event) => {
-    if (event.key !== "Enter") return;
+  onUserInfo = (user) => {
+    this.setState({
+      user
+    });
+  }
 
-    let val = event.target.value;
-    Socket.joinLobby(val);
+  joinInputChange = (lobby) => {
+    this.setState({
+      joinLobbyInput: lobby
+    });
+  }
+
+  joinLobby = () => {
+    let {joinLobbyInput} = this.state;
+    if (joinLobbyInput.trim() === '') return;
+
+    Socket.joinLobby(joinLobbyInput);
   };
 
   joinRandom = () => {
@@ -51,6 +67,32 @@ export default class Home extends Component {
     });
   }
 
+  redirectToAuth = (method) => {
+    window.location.href = 'http://localhost:4000/login/' + method;
+  }
+
+  toggleTab = (event) => {
+    let el = event.target;
+    let id = el.id;
+
+    let curActive = document.getElementsByClassName('tab-active');
+    if (curActive.length > 0) {
+      curActive[0].classList.remove('tab-active');
+    }
+
+    let curActiveOption = document.getElementsByClassName('option-active');
+    if (curActiveOption.length > 0) {
+      curActiveOption[0].classList.remove('option-active');
+    }
+
+    let tabName = id.split('-')[1];
+    if (!tabName) return;
+
+    let tab = document.getElementById(`${tabName}-tab`);
+    tab.classList.add('tab-active');
+    el.classList.add('option-active');
+  }
+
   createLobby = () => {
     const {create} = this.state;
     Socket.createLobby(create.name, create.password);
@@ -61,37 +103,39 @@ export default class Home extends Component {
       return <Redirect to={"/" + this.state.joinLobby} />
     }
 
+    const {user} = this.state;
+
     return (
       <div className="home">
         <div className="container">
           <div className="user">
-            <img alt="User Avatar" src="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"/>
-            <span>Guest</span>
+            <img alt="User Avatar" src={user?.avatar || '/img/guest.png'}/>
+            <span>{user?.username || 'Guest'}</span>
           </div>
           <div className="room">
             <div className="options">
-              <button className="option">Join</button>
-              <button className="option">Create</button>
+              <button className="option option-active" id="toggle-join" onClick={this.toggleTab}>Join</button>
+              <button className="option" id="toggle-create" onClick={this.toggleTab}>Create</button>
             </div>
-            {/*<div className="join">*/}
-            {/*  <input onKeyDown={this.joinLobby} placeholder="Lobby slug"/>*/}
-            {/*  <div className="flex">*/}
-            {/*    <button onClick={() => this.joinRandom()}>Join</button>*/}
-            {/*    <button onClick={() => this.joinRandom()}>Random</button>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
-            <div className="create">
+            <div className="join tab tab-active" id="join-tab">
+              <input onChange={(e) => this.joinInputChange(e.target.value)} placeholder="Lobby slug"/>
+              <div className="flex">
+                <button onClick={() => this.joinLobby()}>Join</button>
+                <button onClick={() => this.joinRandom()}>Random</button>
+              </div>
+            </div>
+            <div className="create tab" id="create-tab">
               <input placeholder="Room Name" name="name" onChange={this.createInputChange}/>
               <input placeholder="Room Password" name="password" onChange={this.createInputChange}/>
               <button onClick={() => this.createLobby()}>Create Lobby</button>
             </div>
           </div>
           <div className="logins">
-            <button className="login">
+            <button className="login" onClick={() => this.redirectToAuth('github')}>
               {/*<FontAwesomeIcon icon={}/>*/}
               GitHub
             </button>
-            <button className="login">Discord</button>
+            <button className="login" onClick={() => this.redirectToAuth('discord')}>Discord</button>
           </div>
         </div>
       </div>

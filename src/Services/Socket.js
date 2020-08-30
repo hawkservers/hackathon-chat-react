@@ -31,6 +31,7 @@ class Socket extends EventEmitter {
 
     this.io.on('chat.message', this.receiveMessage);
     this.io.on('lobby.join', this.receiveJoinLobby);
+    this.io.on('user', this.receiveUserInfo);
   }
 
   /**
@@ -82,6 +83,11 @@ class Socket extends EventEmitter {
     console.error('[WEBSOCKET] ' + e);
   }
 
+  receiveUserInfo = (user) => {
+    this.user = user;
+    this.emit('user', user);
+  }
+
   /**
    * Tries to create a lobby
    *
@@ -102,6 +108,7 @@ class Socket extends EventEmitter {
    * @param {string} [password]
    */
   joinLobby(lobby, password) {
+    console.log(lobby);
     console.debug(`[WEBSOCKET] Attempting to join lobby (${lobby}).`);
     this.wsEmit('lobby.join', {
       lobby, password
