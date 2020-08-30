@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Socket from "../Services/Socket";
 import {Redirect} from 'react-router-dom';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faGithub, faDiscord} from "@fortawesome/free-brands-svg-icons";
 
 import "./home.scss"
 
@@ -118,24 +119,27 @@ export default class Home extends Component {
               <button className="option" id="toggle-create" onClick={this.toggleTab}>Create</button>
             </div>
             <div className="join tab tab-active" id="join-tab">
-              <input onChange={(e) => this.joinInputChange(e.target.value)} placeholder="Lobby slug"/>
+              <input onChange={(e) => this.joinInputChange(e.target.value)} placeholder="Lobby ID"/>
               <div className="flex">
                 <button onClick={() => this.joinLobby()}>Join</button>
                 <button onClick={() => this.joinRandom()}>Random</button>
               </div>
             </div>
             <div className="create tab" id="create-tab">
-              <input placeholder="Room Name" name="name" onChange={this.createInputChange}/>
-              <input placeholder="Room Password" name="password" onChange={this.createInputChange}/>
+              <input placeholder="Name" name="name" onChange={this.createInputChange}/>
+              <input placeholder="Password (Optional)" name="password" onChange={this.createInputChange}/>
               <button onClick={() => this.createLobby()}>Create Lobby</button>
             </div>
           </div>
           <div className="logins">
             <button className="login" onClick={() => this.redirectToAuth('github')}>
-              {/*<FontAwesomeIcon icon={}/>*/}
-              GitHub
+              <FontAwesomeIcon className="icon" icon={faGithub}/>
+              Login with GitHub
             </button>
-            <button className="login" onClick={() => this.redirectToAuth('discord')}>Discord</button>
+            <button className="login" style={{background: "#738ADB"}} onClick={() => this.redirectToAuth('discord')}>
+              <FontAwesomeIcon className="icon" icon={faDiscord}/>
+              Login with Discord
+            </button>
           </div>
         </div>
       </div>
