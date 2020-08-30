@@ -25,7 +25,7 @@ export default class Lobby extends Component {
             <button className="button">
               <FontAwesomeIcon icon={faVideo}/>
             </button>
-            <button className="button">
+            <button className="button" style={{background: "#FF5E5E"}}>
               <FontAwesomeIcon icon={faPhoneSlash}/>
             </button>
             <button type="button" className="button" onClick={() => Socket.joinRandom()}>
