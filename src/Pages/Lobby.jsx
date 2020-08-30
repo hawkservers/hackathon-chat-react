@@ -3,9 +3,14 @@ import Chat from "../Components/Lobby/Chat";
 import Cams from "../Components/Lobby/Cams";
 
 import "./lobby.scss";
+import Socket from "../Services/Socket";
 
 export default class Lobby extends Component {
   lobbyId = this.props.match.params.lobby;
+
+  componentDidMount() {
+    Socket.joinLobby(this.lobbyId);
+  }
 
   render() {
     return (

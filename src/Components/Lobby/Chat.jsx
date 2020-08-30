@@ -7,22 +7,37 @@ export default class Chat extends Component {
     messages: []
   };
 
-  messageList = React.createRef();
+  msgContainer = React.createRef();
 
+  /**
+   * Add event listener for messages when mounted
+   */
   componentDidMount() {
     Socket.addListener('chat.message', this.onMessage);
   }
 
+  /**
+   * Remove event listener for messages when the component is about the be unmounted
+   */
   componentWillUnmount() {
     Socket.removeListener('chat.message', this.onMessage);
   }
 
+  /**
+   * On message event
+   *
+   * @param {object} msg
+   */
   onMessage = (msg) => {
     this.setState({
       messages: [
         ...this.state.messages,
         msg
       ]
+    }, () => {
+      // Scroll container to bottom
+      let {current} = this.msgContainer;
+      current.scrollTop = current.scrollHeight;
     });
   };
 
@@ -44,18 +59,22 @@ export default class Chat extends Component {
   /**
    * Renders an individual message
    *
-   * @param {string} msg
+   * @param {object} msg
+   * @param {string} msg.message
+   * @param {object} msg.user
+   * @param {string} msg.user.username
+   * @parma {string} [msg.user.avatar]
    * @param {number} index
    * @returns {JSX.Element}
    */
   renderMessage = (msg, index) => {
     return (
       <div className="messageContainer" key={index}>
-        <span className="name">Guest</span>
+        <span className="name">{ msg.user.username }</span>
         <div className="splitter">
-          <img alt="User Image" src="https://i.pinimg.com/736x/33/32/6d/33326dcddbf15c56d631e374b62338dc.jpg" className="image"/>
+          <img alt="User Image" src={msg.user.avatar || 'https://i.pinimg.com/736x/33/32/6d/33326dcddbf15c56d631e374b62338dc.jpg'} className="image"/>
           <div className="message">
-            {msg}
+            { msg.message }
           </div>
         </div>
       </div>
@@ -72,7 +91,7 @@ export default class Chat extends Component {
 
     return (
       <div className="chat">
-        <div className="messageList" ref={this.messageList}>
+        <div className="messageList" ref={this.msgContainer}>
           {messages.map(this.renderMessage)}
         </div>
         <input placeholder="Send a message" onKeyDown={this.sendMessage} />
