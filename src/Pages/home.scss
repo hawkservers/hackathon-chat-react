@@ -1,0 +1,115 @@
+.home {
+  background: black;
+  width: 100vw;
+  height: 100vh;
+
+  .container {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-60%);
+
+    .user {
+      width: 125px;
+      margin: auto auto 20px;
+      text-align: center;
+
+      img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+
+      span {
+        color: #DCDCDC;
+        font-size: 28px;
+      }
+    }
+
+    .room {
+      margin: auto;
+      width: 450px;
+      height: 250px;
+      background: #1E2124;
+      border-radius: 5px;
+      //display: flex;
+
+      .options {
+        width: 100%;
+
+        .option {
+          width: 50%;
+          height: 60px;
+          margin-top: 0;
+          background: #1E2124;
+          color: #DCDCDC;
+          border: none;
+          outline: none;
+          font-size: 18px;
+        }
+      }
+
+      input {
+        font-size: 16px;
+        height: 40px;
+        width: 100%;
+        margin-bottom: 10px;
+        background: #282B30;
+        color: #DCDCDC;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      .flex {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      button {
+        font-size: 16px;
+        height: 40px;
+        width: 195px;
+        background: #282B30;
+        color: #DCDCDC;
+        border: none;
+        outline: none;
+        border-radius: 5px;
+      }
+
+      .join {
+        width: 400px;
+        margin: 40px auto auto;
+      }
+
+      .create {
+        width: 400px;
+        margin: 20px auto auto;
+      }
+    }
+
+    .logins {
+      width: 450px;
+      margin: 10px auto auto;
+      display: flex;
+      justify-content: space-between;
+
+      .login {
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        width: 220px;
+        height: 50px;
+        background: #1E2124;
+        color: white;
+        font-size: 18px;
+      }
+    }
+  }
+}
