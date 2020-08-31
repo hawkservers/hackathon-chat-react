@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import {EventEmitter} from 'events';
+import LobbyController from "./LobbyController";
 
 /**
  * @class Socket
@@ -21,16 +22,31 @@ class Socket extends EventEmitter {
    */
   connect() {
     const token = localStorage.getItem('token') || '';
-    this.io = io('ws://localhost:6969', {
-      query: {token}
+
+    LobbyController.on('peer', id => {
+      this.io = io('ws://localhost:6969', {
+        query: {token}
+      });
+
+      this.io.emit('peer', id);
+
+      this.io.on('connect', this.onConnected);
+      this.io.on('disconnect', this.onDisconnected);
+      this.io.on('error', this.onError);
+
+      this.io.on('chat.message', this.receiveMessage);
+      this.io.on('lobby.join', this.receiveJoinLobby);
+      this.io.on('peer', ()=> {
+        this.io.peerSet = true;
+
+        this.queued.forEach((queue, index) => {
+          this.io.emit(...queue);
+          delete this.queued[index];
+        });
+      })
+
+      LobbyController.registerEvents(this.io);
     });
-
-    this.io.on('connect', this.onConnected);
-    this.io.on('disconnect', this.onDisconnected);
-    this.io.on('error', this.onError);
-
-    this.io.on('chat.message', this.receiveMessage);
-    this.io.on('lobby.join', this.receiveJoinLobby);
     this.io.on('user', this.receiveUserInfo);
   }
 
@@ -47,7 +63,7 @@ class Socket extends EventEmitter {
   }
 
   wsEmit(...args) {
-    if (!this.io.connected) {
+    if (!this.io || !this.io.connected || !this.io.peerSet) {
       this.queued.push([...args]);
       return;
     }
@@ -60,11 +76,6 @@ class Socket extends EventEmitter {
    */
   onConnected = () => {
     console.log('[WEBSOCKET] Connected to server.');
-
-    this.queued.forEach((queue, index) => {
-      this.io.emit(...queue);
-      delete this.queued[index];
-    });
   }
 
   /**
